@@ -27,9 +27,9 @@ resource "aws_internet_gateway" "main" {
 
 # Public Subnets
 resource "aws_subnet" "public" {
-    count                   = length(var.public_subnet_cidrs)
+    count                   = length([for cidr in var.public_subnet_cidrs : cidr if cidr != ""])
     vpc_id                  = aws_vpc.main.id
-    cidr_block              = var.public_subnet_cidrs[count.index]
+    cidr_block              = [for cidr in var.public_subnet_cidrs : cidr if cidr != ""][count.index]
     availability_zone       = var.availability_zones[count.index]
     map_public_ip_on_launch = var.map_public_ip_on_launch
 
@@ -44,9 +44,9 @@ resource "aws_subnet" "public" {
 
 # Private Subnets
 resource "aws_subnet" "private" {
-    count             = length(var.private_subnet_cidrs)
+    count             = length([for cidr in var.private_subnet_cidrs : cidr if cidr != ""])
     vpc_id            = aws_vpc.main.id
-    cidr_block        = var.private_subnet_cidrs[count.index]
+    cidr_block        = [for cidr in var.private_subnet_cidrs : cidr if cidr != ""][count.index]
     availability_zone = var.availability_zones[count.index]
 
     tags = merge(
