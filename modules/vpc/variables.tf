@@ -51,6 +51,10 @@ variable "create_nat_gateway" {
     description = "Create NAT Gateway"
     type        = bool
 }
+variable "create_s3_endpoint" {
+    description = "Create S3 Private Endpoint"
+    type        = bool
+}
 
 # Common Tags
 variable "common_tags" {

@@ -137,3 +137,33 @@ resource "aws_route_table_association" "private" {
     subnet_id      = aws_subnet.private[count.index].id
     route_table_id = var.create_nat_gateway ? aws_route_table.private[count.index].id : aws_route_table.private[0].id
 }
+
+#S3 Endpoint
+# VPC Endpoint for S3
+resource "aws_vpc_endpoint" "s3" {
+    count  = var.create_s3_endpoint ? 1 : 0
+    vpc_id       = aws_vpc.main.id
+    service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
+    
+    tags = merge(
+        var.common_tags,
+        {
+            Name = "${var.vpc_name}-s3-endpoint"
+        }
+    )
+}
+
+# Data source to get current region
+
+
+# Associate S3 endpoint with route tables
+resource "aws_vpc_endpoint_route_table_association" "private_s3" {
+    count           = var.create_nat_gateway ? length(var.private_subnet_cidrs) : 1
+    route_table_id  = aws_route_table.private[count.index].id
+    vpc_endpoint_id = aws_vpc_endpoint.s3.id
+}
+
+# resource "aws_vpc_endpoint_route_table_association" "public_s3" {
+#     route_table_id  = aws_route_table.public.id
+#     vpc_endpoint_id = aws_vpc_endpoint.s3.id
+# }
