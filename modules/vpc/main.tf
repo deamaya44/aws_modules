@@ -158,9 +158,9 @@ resource "aws_vpc_endpoint" "s3" {
 
 # Associate S3 endpoint with route tables
 resource "aws_vpc_endpoint_route_table_association" "private_s3" {
-    count           = var.create_nat_gateway ? length(var.private_subnet_cidrs) : 1
+    count           = var.create_s3_endpoint ? 1 : 0
     route_table_id  = aws_route_table.private[count.index].id
-    vpc_endpoint_id = aws_vpc_endpoint.s3.id
+    vpc_endpoint_id = aws_vpc_endpoint.s3[count.index].id
 }
 
 # resource "aws_vpc_endpoint_route_table_association" "public_s3" {
