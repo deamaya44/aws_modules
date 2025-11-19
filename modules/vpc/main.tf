@@ -74,8 +74,8 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "main" {
-    count         = var.create_nat_gateway && var.private_subnet_cidrs != null ? length(var.private_subnet_cidrs) : 0
-    allocation_id = aws_eip.nat[count.index].id
+    count         = var.create_nat_gateway && var.private_subnet_cidrs != null ? 1 : 0
+    allocation_id = aws_eip.nat[0].id
     subnet_id     = aws_subnet.private[count.index].id
 
     tags = merge(
