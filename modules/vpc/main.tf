@@ -60,7 +60,7 @@ resource "aws_subnet" "private" {
 
 # NAT Gateways
 resource "aws_eip" "nat" {
-    count  = var.create_nat_gateway ? length(var.public_subnet_cidrs) : 0
+    count  = var.create_nat_gateway ? length(var.private_subnet_cidrs) : 0
     domain = "vpc"
 
     tags = merge(
@@ -74,7 +74,7 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "main" {
-    count         = var.create_nat_gateway ? length(var.public_subnet_cidrs) : 0
+    count         = var.create_nat_gateway ? length(var.private_subnet_cidrs) : 0
     allocation_id = aws_eip.nat[count.index].id
     subnet_id     = aws_subnet.public[count.index].id
 
