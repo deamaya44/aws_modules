@@ -76,7 +76,7 @@ resource "aws_eip" "nat" {
 resource "aws_nat_gateway" "main" {
     count         = var.create_nat_gateway && var.private_subnet_cidrs != null ? 1 : 0
     allocation_id = aws_eip.nat[0].id
-    subnet_id     = aws_subnet.private[count.index].id
+    subnet_id     = aws_subnet.public[count.index].id
 
     tags = merge(
         var.common_tags,
