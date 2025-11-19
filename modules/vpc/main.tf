@@ -160,7 +160,7 @@ resource "aws_vpc_endpoint" "s3" {
 resource "aws_vpc_endpoint_route_table_association" "private_s3" {
     count           = var.create_s3_endpoint ? length(var.private_subnet_cidrs) : 1
     route_table_id  = aws_route_table.private[count.index].id
-    vpc_endpoint_id = aws_vpc_endpoint.s3[count.index].id
+    vpc_endpoint_id = aws_vpc_endpoint.s3[0].id
 }
 
 # resource "aws_vpc_endpoint_route_table_association" "public_s3" {
