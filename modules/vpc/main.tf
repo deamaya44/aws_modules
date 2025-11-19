@@ -74,7 +74,7 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "main" {
-    count         = var.create_nat_gateway && var.private_subnet_cidrs != null ? 1 : 0
+    count         = var.create_nat_gateway && var.public_subnet_cidrs != null ? 1 : 0
     allocation_id = aws_eip.nat[0].id
     subnet_id     = aws_subnet.public[count.index].id
 
