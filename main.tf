@@ -44,11 +44,51 @@
 #   # Security Group Configuration
 #   name        = each.value.name
 #   description = each.value.description
-#   vpc_id      = module.vpc["main"].vpc_id
+#   vpc_id      = each.value.vpc_id
 #   
 #   # Rules Configuration
 #   ingress_rules = each.value.ingress_rules
 #   egress_rules  = each.value.egress_rules
+#   
+#   # Common Tags
+#   common_tags = each.value.tags
+# }
+
+# IAM Policies Module Example
+# module "iam_policies" {
+#   source   = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/iam_policies?ref=main"
+##  for_each = local.iam_policies --- Uncomment this, when you set the locals ---
+#   
+#   # Policy Configuration
+#   policy_name     = each.value.policy_name
+#   description     = each.value.description
+#   policy_document = each.value.policy_document
+#   
+#   # Attachments (optional)
+#   attach_to_roles  = lookup(each.value, "attach_to_roles", [])
+#   attach_to_users  = lookup(each.value, "attach_to_users", [])
+#   attach_to_groups = lookup(each.value, "attach_to_groups", [])
+#   
+#   # Common Tags
+#   common_tags = each.value.tags
+# }
+
+# IAM Roles Module Example
+# module "iam_roles" {
+#   source   = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/iam_roles?ref=main"
+##  for_each = local.iam_roles --- Uncomment this, when you set the locals ---
+#   
+#   # Role Configuration
+#   role_name               = each.value.role_name
+#   description            = each.value.description
+#   assume_role_policy     = each.value.assume_role_policy
+#   max_session_duration   = lookup(each.value, "max_session_duration", 3600)
+#   create_instance_profile = lookup(each.value, "create_instance_profile", false)
+#   
+#   # Policies
+#   aws_managed_policy_arns = lookup(each.value, "aws_managed_policy_arns", [])
+#   custom_policy_arns     = lookup(each.value, "custom_policy_arns", [])
+#   inline_policies        = lookup(each.value, "inline_policies", [])
 #   
 #   # Common Tags
 #   common_tags = each.value.tags
