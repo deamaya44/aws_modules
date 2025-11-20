@@ -1,10 +1,18 @@
 resource "aws_s3_bucket" "this" {
   bucket = var.name
+  tags = var.tags
 }
 
 resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
   bucket = aws_s3_bucket.this.id
   policy = var.policy
+}
+
+resource "aws_s3_bucket_versioning" "versioning_example" {
+  bucket = aws_s3_bucket.this.id
+  versioning_configuration {
+    status = var.versioning ? "Enabled" : "Suspended"
+  }
 }
 
 # data "aws_iam_policy_document" "allow_access_from_another_account" {
