@@ -26,6 +26,16 @@
 #   common_tags = each.value.tags
 # }
 
+
+# module "s3" {
+#   source     = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/s3?ref=main"
+#   for_each   = local.s3_buckets
+#   name       = each.key
+#   versioning = each.value.versioning
+#   policy     = try(each.value.policy, null)
+#   tags       = each.value.tags
+# }
+
 # Security Groups Module Example
 # module "security_groups" {
 #   source   = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/security_groups?ref=main"
