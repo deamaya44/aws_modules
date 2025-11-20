@@ -25,3 +25,21 @@
 #   # Common Tags
 #   common_tags = each.value.tags
 # }
+
+# Security Groups Module Example
+# module "security_groups" {
+#   source   = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/security_groups?ref=main"
+##  for_each = local.security_groups --- Uncomment this, when you set the locals ---
+#   
+#   # Security Group Configuration
+#   name        = each.value.name
+#   description = each.value.description
+#   vpc_id      = module.vpc["main"].vpc_id
+#   
+#   # Rules Configuration
+#   ingress_rules = each.value.ingress_rules
+#   egress_rules  = each.value.egress_rules
+#   
+#   # Common Tags
+#   common_tags = each.value.tags
+# }
