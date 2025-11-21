@@ -17,7 +17,7 @@ resource "databricks_mws_storage_configurations" "this" {
 resource "databricks_mws_networks" "this" {
   count = var.vpc_id != null ? 1 : 0
   
-  provider           = databricks.mws
+#   provider           = databricks.mws
   account_id         = var.databricks_account_id
   network_name       = "${var.workspace_name}-network"
   vpc_id             = var.vpc_id
