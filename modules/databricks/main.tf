@@ -1,14 +1,13 @@
 # Databricks Credentials Configuration
 resource "databricks_mws_credentials" "this" {
-  provider         = databricks.mws
-  account_id       = var.databricks_account_id
+#   provider         = databricks.mws
   role_arn         = var.cross_account_role_arn
   credentials_name = "${var.workspace_name}-creds"
 }
 
 # Storage Configuration for Databricks
 resource "databricks_mws_storage_configurations" "this" {
-  provider                   = databricks.mws
+#   provider                   = databricks.mws
   account_id                 = var.databricks_account_id
   bucket_name                = var.databricks_root_bucket_name
   storage_configuration_name = "${var.workspace_name}-storage"
@@ -30,7 +29,7 @@ resource "databricks_mws_networks" "this" {
 resource "databricks_mws_customer_managed_keys" "this" {
   count = var.customer_managed_key_id != null ? 1 : 0
   
-  provider   = databricks.mws
+#   provider   = databricks.mws
   account_id = var.databricks_account_id
   aws_key_info {
     key_arn   = var.customer_managed_key_id
@@ -41,7 +40,7 @@ resource "databricks_mws_customer_managed_keys" "this" {
 
 # Databricks Workspace
 resource "databricks_mws_workspaces" "this" {
-  provider       = databricks.mws
+#   provider       = databricks.mws
   account_id     = var.databricks_account_id
   workspace_name = var.workspace_name
   
