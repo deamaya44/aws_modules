@@ -10,7 +10,7 @@ variable "workspace_name" {
 }
 
 variable "deployment_name" {
-  description = "Databricks deployment name (must be unique globally)"
+  description = "Databricks deployment name (must be unique globally) - DEPRECATED: This parameter is no longer used and will be ignored"
   type        = string
   default     = null
 }
