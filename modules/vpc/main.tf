@@ -141,7 +141,7 @@ resource "aws_route_table_association" "private" {
 #S3 Endpoint
 # VPC Endpoint for S3
 resource "aws_vpc_endpoint" "s3" {
-    count  = var.create_s3_endpoint ? 1 : 0
+    count        = var.create_s3_endpoint ? 1 : 0
     vpc_id       = aws_vpc.main.id
     service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
     
@@ -149,6 +149,40 @@ resource "aws_vpc_endpoint" "s3" {
         var.common_tags,
         {
             Name = "${var.vpc_name}-s3-endpoint"
+        }
+    )
+}
+
+resource "aws_vpc_endpoint" "sts" {
+    count               = var.create_sts_endpoint ? 1 : 0
+    vpc_id              = aws_vpc.main.id
+    service_name        = "com.amazonaws.${data.aws_region.current.name}.sts"
+    vpc_endpoint_type   = "Interface"
+    private_dns_enabled = true
+    subnet_ids          = aws_subnet.private[*].id
+    security_group_ids  = var.vpc_endpoint_security_group_ids
+    
+    tags = merge(
+        var.common_tags,
+        {
+            Name = "${var.vpc_name}-sts-endpoint"
+        }
+    )
+}
+
+resource "aws_vpc_endpoint" "kinesis_streams" {
+    count               = var.create_kinesis_endpoint ? 1 : 0
+    vpc_id              = aws_vpc.main.id
+    service_name        = "com.amazonaws.${data.aws_region.current.name}.kinesis-streams"
+    vpc_endpoint_type   = "Interface"
+    private_dns_enabled = true
+    subnet_ids          = aws_subnet.private[*].id
+    security_group_ids  = var.vpc_endpoint_security_group_ids
+    
+    tags = merge(
+        var.common_tags,
+        {
+            Name = "${var.vpc_name}-kinesis-endpoint"
         }
     )
 }

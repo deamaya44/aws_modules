@@ -56,6 +56,22 @@ variable "create_s3_endpoint" {
     type        = bool
 }
 
+variable "create_sts_endpoint" {
+    description = "Create STS Private Endpoint"
+    type        = bool
+}
+
+
+variable "create_kinesis_endpoint" {
+    description = "Create Kinesis Streams Private Endpoint"
+    type        = bool
+}
+
+variable "vpc_endpoint_security_group_ids" {
+    description = "Security group IDs for VPC endpoints"
+    type        = list(string)
+}
+
 # Common Tags
 variable "common_tags" {
     description = "Common tags to apply to all resources"
