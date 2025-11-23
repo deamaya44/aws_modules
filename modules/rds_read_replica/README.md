@@ -87,9 +87,9 @@ module "rds_cross_region_replica" {
   vpc_security_group_ids = ["sg-87654321"]
   availability_zone     = "us-west-2a"
   
-  # Storage Override
+  # Storage Override (REQUIRED for cross-region from encrypted source)
   storage_type      = "gp3"
-  storage_encrypted = true
+  storage_encrypted = true  # MANDATORY for cross-region replicas from encrypted sources
   
   # Monitoring
   monitoring_interval = 60
@@ -126,6 +126,7 @@ module "rds_cross_region_replica" {
 | subnet_group_name | Name of DB subnet group | `string` | `null` | no |
 | subnet_ids | A list of VPC subnet IDs | `list(string)` | `[]` | no |
 | existing_subnet_group_name | Name of existing DB subnet group to use | `string` | `null` | no |
+| storage_encrypted | Specifies whether the read replica is encrypted | `bool` | `null` | no |
 
 ## Outputs
 
@@ -147,3 +148,7 @@ module "rds_cross_region_replica" {
   - Create a new one by setting `create_subnet_group = true` and providing `subnet_ids`
   - Use an existing one by setting `existing_subnet_group_name`
 - If creating cross-region replicas, ensure the subnet group exists in the target region
+- **CRITICAL**: For cross-region read replicas from encrypted sources:
+  - You MUST set `storage_encrypted = true` on the read replica
+  - AWS does not allow unencrypted cross-region replicas from encrypted sources
+  - This is enforced by AWS API and will cause deployment failures if not configured

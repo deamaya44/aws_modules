@@ -143,6 +143,9 @@
 #   vpc_security_group_ids = each.value.vpc_security_group_ids
 #   publicly_accessible    = lookup(each.value, "publicly_accessible", false)
 #   
+#   # Storage Configuration (REQUIRED for cross-region encrypted replicas)
+#   storage_encrypted = lookup(each.value, "storage_encrypted", true)
+#   
 #   # Subnet Group Configuration (choose one option)
 #   create_subnet_group        = lookup(each.value, "create_subnet_group", false)
 #   subnet_group_name          = lookup(each.value, "subnet_group_name", null)
