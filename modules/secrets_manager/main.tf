@@ -42,7 +42,7 @@ resource "aws_secretsmanager_secret_version" "generated_password" {
   count     = var.generate_random_password ? 1 : 0
   secret_id = aws_secretsmanager_secret.this.id
   secret_string = jsonencode({
-    username = var.generated_password_username
+    username = var.username
     password = random_password.this[0].result
   })
 }

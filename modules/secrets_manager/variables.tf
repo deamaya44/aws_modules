@@ -81,7 +81,7 @@ variable "password_include_numeric" {
   default     = true
 }
 
-variable "generated_password_username" {
+variable "username" {
   description = "Username to associate with the generated password"
   type        = string
   default     = "admin"
