@@ -93,3 +93,80 @@
 #   # Common Tags
 #   common_tags = each.value.tags
 # }
+
+# RDS Module Example
+# module "rds" {
+#   source = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/rds?ref=main"
+##  for_each = local.rds_instances --- Uncomment this, when you set the locals ---
+#   
+#   # Basic Configuration
+#   identifier     = each.value.identifier
+#   engine         = each.value.engine
+#   engine_version = each.value.engine_version
+#   instance_class = each.value.instance_class
+#   
+#   # Database Configuration
+#   db_name  = lookup(each.value, "db_name", null)
+#   username = each.value.username
+#   password = each.value.password
+#   
+#   # Storage Configuration
+#   allocated_storage  = each.value.allocated_storage
+#   storage_encrypted  = lookup(each.value, "storage_encrypted", true)
+#   
+#   # Network & Security
+#   subnet_ids             = each.value.subnet_ids
+#   vpc_security_group_ids = each.value.vpc_security_group_ids
+#   
+#   # Backup & Maintenance
+#   backup_retention_period = lookup(each.value, "backup_retention_period", 7)
+#   skip_final_snapshot    = lookup(each.value, "skip_final_snapshot", false)
+#   
+#   # High Availability
+#   multi_az = lookup(each.value, "multi_az", false)
+#   
+#   # Common Tags
+#   common_tags = each.value.tags
+# }
+
+# RDS Read Replica Module Example
+# module "rds_read_replica" {
+#   source = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/rds_read_replica?ref=main"
+##  for_each = local.rds_read_replicas --- Uncomment this, when you set the locals ---
+#   
+#   # Basic Configuration
+#   identifier            = each.value.identifier
+#   source_db_identifier  = each.value.source_db_identifier
+#   instance_class       = each.value.instance_class
+#   
+#   # Network & Security
+#   vpc_security_group_ids = each.value.vpc_security_group_ids
+#   publicly_accessible    = lookup(each.value, "publicly_accessible", false)
+#   
+#   # Common Tags
+#   common_tags = each.value.tags
+# }
+
+# Secrets Manager Module Example
+# module "secrets_manager" {
+#   source = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/secrets_manager?ref=main"
+##  for_each = local.secrets --- Uncomment this, when you set the locals ---
+#   
+#   # Basic Configuration
+#   secret_name = each.value.secret_name
+#   description = each.value.description
+#   
+#   # Secret Content (choose one option)
+#   secret_string    = lookup(each.value, "secret_string", null)
+#   secret_key_value = lookup(each.value, "secret_key_value", null)
+#   
+#   # Random Password Generation (optional)
+#   generate_random_password = lookup(each.value, "generate_random_password", false)
+#   password_length         = lookup(each.value, "password_length", 32)
+#   
+#   # Security
+#   kms_key_id = lookup(each.value, "kms_key_id", null)
+#   
+#   # Common Tags
+#   common_tags = each.value.tags
+# }
