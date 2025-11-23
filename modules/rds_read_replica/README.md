@@ -12,7 +12,7 @@ This module creates an AWS RDS Read Replica from an existing RDS instance.
 
 ## Usage
 
-### Basic Read Replica
+### Basic Read Replica with New Subnet Group
 
 ```hcl
 module "rds_read_replica" {
@@ -26,6 +26,38 @@ module "rds_read_replica" {
   # Network Configuration
   vpc_security_group_ids = ["sg-12345678"]
   publicly_accessible    = false
+  
+  # Subnet Group (create new one)
+  create_subnet_group = true
+  subnet_group_name   = "my-database-replica-subnet-group"
+  subnet_ids         = ["subnet-12345", "subnet-67890"]
+  
+  # Tags
+  common_tags = {
+    Environment = "prod"
+    Project     = "myapp"
+  }
+}
+```
+
+### Basic Read Replica with Existing Subnet Group
+
+```hcl
+module "rds_read_replica_existing" {
+  source = "./modules/rds_read_replica"
+  
+  # Basic Configuration
+  identifier            = "my-database-replica"
+  source_db_identifier  = "my-database"
+  instance_class       = "db.t3.micro"
+  
+  # Network Configuration
+  vpc_security_group_ids = ["sg-12345678"]
+  publicly_accessible    = false
+  
+  # Use existing subnet group
+  create_subnet_group        = false
+  existing_subnet_group_name = "existing-db-subnet-group"
   
   # Tags
   common_tags = {
@@ -90,6 +122,10 @@ module "rds_cross_region_replica" {
 | instance_class | The instance type of the read replica | `string` | `"db.t3.micro"` | no |
 | publicly_accessible | Bool to control if instance is publicly accessible | `bool` | `false` | no |
 | vpc_security_group_ids | List of VPC security groups to associate | `list(string)` | `[]` | no |
+| create_subnet_group | Whether to create a DB subnet group | `bool` | `false` | no |
+| subnet_group_name | Name of DB subnet group | `string` | `null` | no |
+| subnet_ids | A list of VPC subnet IDs | `list(string)` | `[]` | no |
+| existing_subnet_group_name | Name of existing DB subnet group to use | `string` | `null` | no |
 
 ## Outputs
 
@@ -107,3 +143,7 @@ module "rds_cross_region_replica" {
 - Cross-region read replicas require the full ARN of the source database
 - Storage encryption settings can be overridden for the read replica
 - Read replicas can have different instance classes than the source database
+- **IMPORTANT**: Read replicas require a DB subnet group. You can either:
+  - Create a new one by setting `create_subnet_group = true` and providing `subnet_ids`
+  - Use an existing one by setting `existing_subnet_group_name`
+- If creating cross-region replicas, ensure the subnet group exists in the target region

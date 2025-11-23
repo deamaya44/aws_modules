@@ -43,3 +43,14 @@ output "read_replica_port" {
   description = "The database port of the read replica"
   value       = aws_db_instance.read_replica.port
 }
+
+# DB Subnet Group Outputs
+output "db_subnet_group_id" {
+  description = "The db subnet group name for read replica"
+  value       = var.create_subnet_group ? aws_db_subnet_group.read_replica[0].id : null
+}
+
+output "db_subnet_group_arn" {
+  description = "The ARN of the db subnet group for read replica"
+  value       = var.create_subnet_group ? aws_db_subnet_group.read_replica[0].arn : null
+}

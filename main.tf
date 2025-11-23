@@ -143,6 +143,12 @@
 #   vpc_security_group_ids = each.value.vpc_security_group_ids
 #   publicly_accessible    = lookup(each.value, "publicly_accessible", false)
 #   
+#   # Subnet Group Configuration (choose one option)
+#   create_subnet_group        = lookup(each.value, "create_subnet_group", false)
+#   subnet_group_name          = lookup(each.value, "subnet_group_name", null)
+#   subnet_ids                 = lookup(each.value, "subnet_ids", [])
+#   existing_subnet_group_name = lookup(each.value, "existing_subnet_group_name", null)
+#   
 #   # Common Tags
 #   common_tags = each.value.tags
 # }

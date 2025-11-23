@@ -1,3 +1,17 @@
+# DB Subnet Group (optional)
+resource "aws_db_subnet_group" "read_replica" {
+  count      = var.create_subnet_group ? 1 : 0
+  name       = var.subnet_group_name
+  subnet_ids = var.subnet_ids
+
+  tags = merge(
+    var.common_tags,
+    {
+      Name = var.subnet_group_name
+    }
+  )
+}
+
 # RDS Read Replica
 resource "aws_db_instance" "read_replica" {
   identifier                 = var.identifier
@@ -13,6 +27,7 @@ resource "aws_db_instance" "read_replica" {
   
   # Network & Security
   vpc_security_group_ids = var.vpc_security_group_ids
+  db_subnet_group_name   = var.create_subnet_group ? aws_db_subnet_group.read_replica[0].name : var.existing_subnet_group_name
   availability_zone     = var.availability_zone
   
   # Monitoring

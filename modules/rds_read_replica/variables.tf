@@ -34,6 +34,31 @@ variable "availability_zone" {
   default     = null
 }
 
+# Subnet Group Configuration
+variable "create_subnet_group" {
+  description = "Whether to create a DB subnet group for the read replica"
+  type        = bool
+  default     = false
+}
+
+variable "subnet_group_name" {
+  description = "Name of DB subnet group for the read replica"
+  type        = string
+  default     = null
+}
+
+variable "subnet_ids" {
+  description = "A list of VPC subnet IDs for the read replica"
+  type        = list(string)
+  default     = []
+}
+
+variable "existing_subnet_group_name" {
+  description = "Name of existing DB subnet group to use for the read replica"
+  type        = string
+  default     = null
+}
+
 # Storage Configuration
 variable "storage_type" {
   description = "One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD)"
