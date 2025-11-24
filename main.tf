@@ -145,6 +145,7 @@
 #   
 #   # Storage Configuration (REQUIRED for cross-region encrypted replicas)
 #   storage_encrypted = lookup(each.value, "storage_encrypted", true)
+#   kms_key_id       = lookup(each.value, "kms_key_id", null)  # Use data.aws_kms_key.rds_target_region.arn
 #   
 #   # Subnet Group Configuration (choose one option)
 #   create_subnet_group        = lookup(each.value, "create_subnet_group", false)
@@ -175,6 +176,41 @@
 #   
 #   # Security
 #   kms_key_id = lookup(each.value, "kms_key_id", null)
+#   
+#   # Common Tags
+#   common_tags = each.value.tags
+# }
+
+# EC2 Module Example
+# module "ec2" {
+#   source = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/ec2?ref=main"
+##  for_each = local.ec2_instances --- Uncomment this, when you set the locals ---
+#   
+#   # Basic Configuration
+#   instance_name = each.value.instance_name
+#   instance_type = each.value.instance_type
+#   
+#   # Network Configuration
+#   subnet_id                    = each.value.subnet_id
+#   vpc_security_group_ids      = each.value.vpc_security_group_ids
+#   associate_public_ip_address = lookup(each.value, "associate_public_ip_address", false)
+#   
+#   # SSH Access
+#   create_key_pair   = lookup(each.value, "create_key_pair", false)
+#   key_name         = lookup(each.value, "key_name", null)
+#   public_key       = lookup(each.value, "public_key", null)
+#   existing_key_name = lookup(each.value, "existing_key_name", null)
+#   
+#   # Storage Configuration
+#   root_volume_size      = lookup(each.value, "root_volume_size", 8)
+#   root_volume_type     = lookup(each.value, "root_volume_type", "gp3")
+#   root_volume_encrypted = lookup(each.value, "root_volume_encrypted", true)
+#   
+#   # User Data
+#   user_data = lookup(each.value, "user_data", null)
+#   
+#   # Monitoring
+#   detailed_monitoring = lookup(each.value, "detailed_monitoring", false)
 #   
 #   # Common Tags
 #   common_tags = each.value.tags

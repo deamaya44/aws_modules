@@ -67,6 +67,20 @@ module "rds_read_replica_existing" {
 }
 ```
 
+### Data Sources for KMS Keys
+
+```hcl
+# KMS Key data sources
+data "aws_kms_key" "rds_source_region" {
+  key_id = "alias/aws/rds"
+}
+
+data "aws_kms_key" "rds_target_region" {
+  provider = aws.us-west-2
+  key_id   = "alias/aws/rds"
+}
+```
+
 ### Cross-Region Read Replica
 
 ```hcl
@@ -90,6 +104,7 @@ module "rds_cross_region_replica" {
   # Storage Override (REQUIRED for cross-region from encrypted source)
   storage_type      = "gp3"
   storage_encrypted = true  # MANDATORY for cross-region replicas from encrypted sources
+  kms_key_id       = data.aws_kms_key.rds_target_region.arn  # REQUIRED: KMS key in target region
   
   # Monitoring
   monitoring_interval = 60
@@ -127,6 +142,7 @@ module "rds_cross_region_replica" {
 | subnet_ids | A list of VPC subnet IDs | `list(string)` | `[]` | no |
 | existing_subnet_group_name | Name of existing DB subnet group to use | `string` | `null` | no |
 | storage_encrypted | Specifies whether the read replica is encrypted | `bool` | `null` | no |
+| kms_key_id | The ARN for the KMS encryption key | `string` | `null` | no |
 
 ## Outputs
 
@@ -150,5 +166,7 @@ module "rds_cross_region_replica" {
 - If creating cross-region replicas, ensure the subnet group exists in the target region
 - **CRITICAL**: For cross-region read replicas from encrypted sources:
   - You MUST set `storage_encrypted = true` on the read replica
+  - You MUST specify a `kms_key_id` in the target region (use `"alias/aws/rds"` for default AWS managed key)
   - AWS does not allow unencrypted cross-region replicas from encrypted sources
+  - The KMS key must exist in the target region where the replica is being created
   - This is enforced by AWS API and will cause deployment failures if not configured
