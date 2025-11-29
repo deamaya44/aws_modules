@@ -32,3 +32,8 @@ output "oai_cloudfront_path" {
   description = "CloudFront path of the Origin Access Identity"
   value       = var.create_oai ? aws_cloudfront_origin_access_identity.this[0].cloudfront_access_identity_path : null
 }
+
+output "oai_s3_canonical_user_id" {
+  description = "S3 Canonical User ID of the Origin Access Identity"
+  value       = var.create_oai ? aws_cloudfront_origin_access_identity.this[0].s3_canonical_user_id : null
+}
