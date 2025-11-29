@@ -55,7 +55,7 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
   bucket = var.bucket_id
 
   rule {
-    id = "replication-to-${var.bucket_id}"
+    id = "replication-to-${regex("s3:::(.+)$", var.destination_bucket_arn)[0]}"
 
     # filter {
     #   prefix = "example"
