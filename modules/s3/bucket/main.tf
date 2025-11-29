@@ -17,6 +17,11 @@ resource "aws_s3_bucket_versioning" "this" {
   }
 }
 
+resource "aws_s3_bucket_acl" "this" {
+  bucket = aws_s3_bucket.this.id
+  acl    = var.acl
+}
+
 # Public Access Block (optional)
 resource "aws_s3_bucket_public_access_block" "this" {
   count  = var.block_public_access ? 1 : 0
