@@ -20,7 +20,7 @@ resource "aws_s3_bucket_versioning" "this" {
 resource "aws_s3_bucket_public_access_block" "this" {
   count  = var.block_public_access ? 1 : 0
   bucket = aws_s3_bucket.this.id
-  
+
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true

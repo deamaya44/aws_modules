@@ -89,9 +89,9 @@ variable "ebs_block_devices" {
   description = "List of additional EBS block devices"
   type = list(object({
     device_name           = string
-    volume_type          = string
-    volume_size          = number
-    encrypted            = bool
+    volume_type           = string
+    volume_size           = number
+    encrypted             = bool
     delete_on_termination = bool
   }))
   default = []

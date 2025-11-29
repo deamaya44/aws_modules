@@ -31,17 +31,17 @@ resource "aws_key_pair" "this" {
 # EC2 Instance
 resource "aws_instance" "this" {
   ami                         = var.ami_id != null ? var.ami_id : data.aws_ami.amazon_linux.id
-  instance_type              = var.instance_type
-  key_name                   = var.create_key_pair ? aws_key_pair.this[0].key_name : var.existing_key_name
-  subnet_id                  = var.subnet_id
-  vpc_security_group_ids     = var.vpc_security_group_ids
+  instance_type               = var.instance_type
+  key_name                    = var.create_key_pair ? aws_key_pair.this[0].key_name : var.existing_key_name
+  subnet_id                   = var.subnet_id
+  vpc_security_group_ids      = var.vpc_security_group_ids
   associate_public_ip_address = var.associate_public_ip_address
 
   # Root block device
   root_block_device {
     volume_type           = var.root_volume_type
-    volume_size          = var.root_volume_size
-    encrypted            = var.root_volume_encrypted
+    volume_size           = var.root_volume_size
+    encrypted             = var.root_volume_encrypted
     delete_on_termination = var.root_volume_delete_on_termination
   }
 
@@ -50,9 +50,9 @@ resource "aws_instance" "this" {
     for_each = var.ebs_block_devices
     content {
       device_name           = ebs_block_device.value.device_name
-      volume_type          = ebs_block_device.value.volume_type
-      volume_size          = ebs_block_device.value.volume_size
-      encrypted            = ebs_block_device.value.encrypted
+      volume_type           = ebs_block_device.value.volume_type
+      volume_size           = ebs_block_device.value.volume_size
+      encrypted             = ebs_block_device.value.encrypted
       delete_on_termination = ebs_block_device.value.delete_on_termination
     }
   }
@@ -69,7 +69,7 @@ resource "aws_instance" "this" {
   # Metadata options
   metadata_options {
     http_endpoint               = var.metadata_http_endpoint
-    http_tokens                = var.metadata_http_tokens
+    http_tokens                 = var.metadata_http_tokens
     http_put_response_hop_limit = var.metadata_http_put_response_hop_limit
   }
 
