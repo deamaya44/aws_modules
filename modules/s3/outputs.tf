@@ -38,3 +38,32 @@ output "public_access_blocked" {
   description = "Whether public access is blocked on the S3 bucket"
   value       = var.block_public_access
 }
+
+# CRR Outputs
+output "crr_enabled" {
+  description = "Whether Cross-Region Replication is enabled"
+  value       = var.enable_crr
+}
+
+output "crr_role_arn" {
+  description = "ARN of the IAM role used for Cross-Region Replication"
+  value       = var.crr_role_arn
+}
+
+output "crr_destination_bucket" {
+  description = "Destination bucket for Cross-Region Replication"
+  value       = var.crr_destination_bucket
+  sensitive   = true
+}
+
+# Encryption Outputs
+output "encryption_enabled" {
+  description = "Whether server-side encryption is enabled"
+  value       = var.enable_server_side_encryption
+}
+
+output "kms_key_id" {
+  description = "KMS key ID used for encryption"
+  value       = var.kms_key_id
+  sensitive   = true
+}
