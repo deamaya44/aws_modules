@@ -5,6 +5,15 @@ resource "aws_secretsmanager_secret" "this" {
   kms_key_id              = var.kms_key_id
   recovery_window_in_days = var.recovery_window_in_days
 
+  # Replication configuration
+  dynamic "replica" {
+    for_each = var.replica_regions
+    content {
+      region     = replica.value.region
+      kms_key_id = lookup(replica.value, "kms_key_id", null)
+    }
+  }
+
   tags = merge(
     var.common_tags,
     {
