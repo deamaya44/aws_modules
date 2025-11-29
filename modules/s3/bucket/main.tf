@@ -33,3 +33,28 @@ resource "aws_s3_bucket_public_access_block" "this" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+resource "aws_s3_bucket_replication_configuration" "replication" {
+  count = var.replication_enabled ? 1 : 0
+  # Must have bucket versioning enabled first
+  depends_on = [aws_s3_bucket_versioning.this]
+
+  # role   = aws_iam_role.replication.arn
+  role   = var.role_arn
+  bucket = var.bucket_id
+
+  rule {
+    id = "replication-to-${var.bucket_id}"
+
+    # filter {
+    #   prefix = "example"
+    # }
+
+    status = "Enabled"
+
+    destination {
+      bucket        = var.destination_bucket_arn
+      storage_class = var.storage_class
+    }
+  }
+}

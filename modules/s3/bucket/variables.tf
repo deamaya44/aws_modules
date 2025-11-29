@@ -41,3 +41,28 @@ variable "acl_enabled" {
   type        = bool
   default     = false
 }
+variable "replication_enabled" {
+  description = "Enable replication configuration for the S3 bucket"
+  type        = bool
+  default     = false
+}
+variable "role_arn" {
+  description = "The ARN of the IAM role for replication"
+  type        = string
+  default     = null
+}
+variable "bucket_id" {
+  description = "The ID of the source bucket for replication"
+  type        = string  
+  default     = null
+}
+variable "destination_bucket_arn" {
+  description = "The ARN of the destination bucket for replication"
+  type        = string  
+  default     = null
+}
+variable "storage_class" {
+  description = "The storage class for replicated objects"
+  type        = string  
+  default     = "STANDARD"
+}
