@@ -148,8 +148,15 @@ variable "function_url_auth_type" {
 
 variable "function_url_cors" {
   description = "CORS configuration for Lambda function URL"
-  type        = map(any)
-  default     = null
+  type = object({
+    allow_credentials = optional(bool, false)
+    allow_origins     = optional(list(string), ["*"])
+    allow_methods     = optional(list(string), ["*"])
+    allow_headers     = optional(list(string), [])
+    expose_headers    = optional(list(string), [])
+    max_age           = optional(number, 0)
+  })
+  default = null
 }
 
 variable "common_tags" {

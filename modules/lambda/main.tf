@@ -94,12 +94,12 @@ resource "aws_lambda_function_url" "this" {
   dynamic "cors" {
     for_each = var.function_url_cors != null ? [1] : []
     content {
-      allow_credentials = lookup(var.function_url_cors, "allow_credentials", false)
-      allow_origins     = lookup(var.function_url_cors, "allow_origins", ["*"])
-      allow_methods     = lookup(var.function_url_cors, "allow_methods", ["*"])
-      allow_headers     = lookup(var.function_url_cors, "allow_headers", [])
-      expose_headers    = lookup(var.function_url_cors, "expose_headers", [])
-      max_age           = lookup(var.function_url_cors, "max_age", 0)
+      allow_credentials = var.function_url_cors.allow_credentials
+      allow_origins     = var.function_url_cors.allow_origins
+      allow_methods     = var.function_url_cors.allow_methods
+      allow_headers     = var.function_url_cors.allow_headers
+      expose_headers    = var.function_url_cors.expose_headers
+      max_age           = var.function_url_cors.max_age
     }
   }
 }
