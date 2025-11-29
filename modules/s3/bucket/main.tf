@@ -1,6 +1,7 @@
 resource "aws_s3_bucket" "this" {
-  bucket = var.name
-  tags   = var.tags
+  bucket        = var.name
+  force_destroy = var.force_destroy
+  tags          = var.tags
 }
 
 resource "aws_s3_bucket_policy" "this" {
