@@ -17,10 +17,21 @@ resource "aws_s3_bucket_versioning" "this" {
   }
 }
 
-resource "aws_s3_bucket_acl" "this" {
-  count = var.acl_enabled ? 1 : 0
+# Ownership Controls - Required before ACL configuration
+resource "aws_s3_bucket_ownership_controls" "this" {
+  count  = var.acl_enabled ? 1 : 0
   bucket = aws_s3_bucket.this.id
-  acl    = var.acl
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "this" {
+  count      = var.acl_enabled ? 1 : 0
+  bucket     = aws_s3_bucket.this.id
+  acl        = var.acl
+  depends_on = [aws_s3_bucket_ownership_controls.this]
 }
 
 # Public Access Block (optional)
