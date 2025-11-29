@@ -18,6 +18,7 @@ resource "aws_s3_bucket_versioning" "this" {
 }
 
 resource "aws_s3_bucket_acl" "this" {
+  count = var.acl_enabled ? 1 : 0
   bucket = aws_s3_bucket.this.id
   acl    = var.acl
 }

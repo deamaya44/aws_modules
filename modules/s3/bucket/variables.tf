@@ -36,3 +36,8 @@ variable "acl" {
   type        = string
   default     = "private"
 }
+variable "acl_enabled" {
+  description = "Whether to enable ACL configuration"
+  type        = bool
+  default     = false
+}
