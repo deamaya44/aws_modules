@@ -49,7 +49,7 @@ resource "aws_db_instance" "this" {
   max_allocated_storage = var.max_allocated_storage
   storage_type          = var.storage_type
   storage_encrypted     = var.storage_encrypted
-  kms_key_id           = var.kms_key_id
+  kms_key_id            = var.kms_key_id
 
   # Database Configuration
   db_name  = var.db_name
@@ -66,21 +66,21 @@ resource "aws_db_instance" "this" {
   parameter_group_name = var.create_parameter_group ? aws_db_parameter_group.this[0].name : var.existing_parameter_group_name
 
   # Backup & Maintenance
-  backup_retention_period = var.backup_retention_period
-  backup_window          = var.backup_window
-  maintenance_window     = var.maintenance_window
-  copy_tags_to_snapshot  = var.copy_tags_to_snapshot
-  skip_final_snapshot    = var.skip_final_snapshot
+  backup_retention_period   = var.backup_retention_period
+  backup_window             = var.backup_window
+  maintenance_window        = var.maintenance_window
+  copy_tags_to_snapshot     = var.copy_tags_to_snapshot
+  skip_final_snapshot       = var.skip_final_snapshot
   final_snapshot_identifier = var.final_snapshot_identifier
 
   # Monitoring
-  monitoring_interval = var.monitoring_interval
-  monitoring_role_arn = var.monitoring_role_arn
+  monitoring_interval             = var.monitoring_interval
+  monitoring_role_arn             = var.monitoring_role_arn
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
 
   # High Availability
-  multi_az               = var.multi_az
-  availability_zone     = var.availability_zone
+  multi_az          = var.multi_az
+  availability_zone = var.availability_zone
 
 
 

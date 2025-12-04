@@ -59,7 +59,7 @@ locals {
       }
     }
 
-      rds_connect = {
+    rds_connect = {
       policy_name = "RDSConnectPolicy"
       description = "Policy for connecting to RDS databases"
       policy_document = jsonencode({

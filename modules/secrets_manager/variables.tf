@@ -106,6 +106,16 @@ variable "rotation_days" {
   default     = 30
 }
 
+# Replication Configuration
+variable "replica_regions" {
+  description = "List of regions to replicate the secret to. Each entry should have 'region' and optionally 'kms_key_id'"
+  type = list(object({
+    region     = string
+    kms_key_id = optional(string)
+  }))
+  default     = []
+}
+
 # Common Tags
 variable "common_tags" {
   description = "A map of tags to assign to the secret"

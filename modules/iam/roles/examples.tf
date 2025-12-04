@@ -5,9 +5,9 @@ locals {
   iam_roles = {
     ec2_instance_role = {
       role_name               = "EC2InstanceRole"
-      description            = "IAM role for EC2 instances"
+      description             = "IAM role for EC2 instances"
       create_instance_profile = true
-      max_session_duration   = 3600
+      max_session_duration    = 3600
       assume_role_policy = jsonencode({
         Version = "2012-10-17"
         Statement = [
@@ -57,7 +57,7 @@ locals {
 
     lambda_execution_role = {
       role_name            = "LambdaExecutionRole"
-      description         = "IAM role for Lambda functions"
+      description          = "IAM role for Lambda functions"
       max_session_duration = 3600
       assume_role_policy = jsonencode({
         Version = "2012-10-17"
@@ -90,7 +90,7 @@ locals {
 
     cross_account_role = {
       role_name            = "CrossAccountRole"
-      description         = "IAM role for cross-account access"
+      description          = "IAM role for cross-account access"
       max_session_duration = 7200
       assume_role_policy = jsonencode({
         Version = "2012-10-17"
