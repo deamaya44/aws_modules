@@ -39,7 +39,7 @@ resource "aws_security_group_rule" "egress" {
     protocol    = var.egress_rules[count.index].protocol
     cidr_blocks = lookup(var.egress_rules[count.index], "cidr_blocks", null)
     
-    source_security_group_id = lookup(var.egress_rules[count.index], "destination_security_group_id", null)
+    source_security_group_id = lookup(var.egress_rules[count.index], "source_security_group_id", null)
     
     description = lookup(var.egress_rules[count.index], "description", "")
 }
