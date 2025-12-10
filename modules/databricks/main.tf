@@ -66,10 +66,12 @@ resource "databricks_mws_workspaces" "this" {
   ]
 }
 
-# resource "databricks_external_location" "some" {
-#   name            = "external"
-#   url             = "s3://${aws_s3_bucket.external.id}/some"
-#   credential_name = databricks_storage_credential.external.id
-#   comment         = "Managed by TF"
-# }
+# External Locations Module
+module "external_locations" {
+  source = "./external_locations"
 
+  storage_credentials = var.storage_credentials
+  external_locations  = var.external_locations
+
+  depends_on = [databricks_mws_workspaces.this]
+}
