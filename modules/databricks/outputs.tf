@@ -59,13 +59,3 @@ output "databricks_token" {
   value       = databricks_mws_workspaces.this.token[0].token_value
   sensitive   = true
 }
-# External Locations Outputs
-output "storage_credentials" {
-  description = "Map of storage credential details"
-  value       = module.external_locations.storage_credentials
-}
-
-output "external_locations" {
-  description = "Map of external location details"
-  value       = module.external_locations.external_locations
-}

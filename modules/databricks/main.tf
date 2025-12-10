@@ -65,18 +65,3 @@ resource "databricks_mws_workspaces" "this" {
     databricks_mws_storage_configurations.this
   ]
 }
-
-# External Locations Module
-module "external_locations" {
-  source = "./external_locations"
-
-  storage_credentials = var.storage_credentials
-  external_locations  = var.external_locations
-
-  providers = {
-    databricks = databricks.workspace
-    aws        = aws
-  }
-
-  depends_on = [databricks_mws_workspaces.this]
-}

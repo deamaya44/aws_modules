@@ -3,7 +3,7 @@ terraform {
     databricks = {
       source  = "databricks/databricks"
       version = ">= 1.0.0"
-      configuration_aliases = [databricks.mws, databricks.workspace]
+      configuration_aliases = [databricks.mws]
     }
     aws = {
       source  = "hashicorp/aws"
