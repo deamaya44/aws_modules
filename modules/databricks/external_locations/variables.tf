@@ -1,12 +1,17 @@
 variable "storage_credentials" {
   description = "Map of storage credentials to create in Databricks"
   type = map(object({
-    name          = string
-    iam_role_arn  = string
-    comment       = optional(string, "Managed by Terraform")
-    owner         = optional(string)
-    force_destroy = optional(bool, false)
-    read_only     = optional(bool, false)
+    name             = string
+    aws_account_id   = string
+    role_name        = string
+    external_id      = string
+    policy_document  = string
+    description      = optional(string, "IAM role for Databricks external location")
+    comment          = optional(string, "Managed by Terraform")
+    owner            = optional(string)
+    force_destroy    = optional(bool, false)
+    read_only        = optional(bool, false)
+    tags             = optional(map(string), {})
   }))
   default = {}
 }

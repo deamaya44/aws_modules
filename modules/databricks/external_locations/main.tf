@@ -1,10 +1,39 @@
+# Data source to get Unity Catalog assume role policy from Databricks
+data "databricks_aws_unity_catalog_assume_role_policy" "this" {
+  for_each = var.storage_credentials
+
+  aws_account_id = each.value.aws_account_id
+  role_name      = each.value.role_name
+  external_id    = each.value.external_id
+}
+
+# IAM Role for Storage Credential
+resource "aws_iam_role" "storage_credential" {
+  for_each = var.storage_credentials
+
+  name               = each.value.role_name
+  assume_role_policy = data.databricks_aws_unity_catalog_assume_role_policy.this[each.key].json
+  description        = lookup(each.value, "description", "IAM role for Databricks external location")
+  
+  tags = lookup(each.value, "tags", {})
+}
+
+# IAM Policy for S3 access
+resource "aws_iam_role_policy" "storage_credential" {
+  for_each = var.storage_credentials
+
+  name   = "${each.value.role_name}-policy"
+  role   = aws_iam_role.storage_credential[each.key].id
+  policy = each.value.policy_document
+}
+
 # Storage Credential for External Locations
 resource "databricks_storage_credential" "this" {
   for_each = var.storage_credentials
 
   name = each.value.name
   aws_iam_role {
-    role_arn = each.value.iam_role_arn
+    role_arn = aws_iam_role.storage_credential[each.key].arn
   }
   comment = lookup(each.value, "comment", "Managed by Terraform")
 
@@ -16,6 +45,8 @@ resource "databricks_storage_credential" "this" {
 
   # Optional: Read-only mode
   read_only = lookup(each.value, "read_only", false)
+
+  depends_on = [aws_iam_role_policy.storage_credential]
 }
 
 # External Locations pointing to S3 buckets/paths

@@ -1,3 +1,14 @@
+# IAM Roles Outputs
+output "iam_roles" {
+  description = "Map of IAM role details for storage credentials"
+  value = {
+    for k, v in aws_iam_role.storage_credential : k => {
+      arn  = v.arn
+      name = v.name
+    }
+  }
+}
+
 # Storage Credentials Outputs
 output "storage_credentials" {
   description = "Map of storage credential IDs"
