@@ -106,7 +106,7 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table" "private" {
-  count  = var.create_nat_gateway ? length(var.private_subnet_cidrs) : 1
+  count  = var.create_nat_gateway ? length(var.private_subnet_cidrs) : length(var.private_subnet_cidrs)
   vpc_id = aws_vpc.main.id
 
   dynamic "route" {
