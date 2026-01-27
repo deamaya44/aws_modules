@@ -11,7 +11,7 @@ resource "aws_lambda_function" "this" {
   filename         = var.filename
   source_code_hash = var.filename != null ? filebase64sha256(var.filename) : null
   lifecycle {
-    ignore_changes = [ source_code_hash ]
+    ignore_changes = [source_code_hash]
   }
 
   # S3 deployment (alternative to filename)

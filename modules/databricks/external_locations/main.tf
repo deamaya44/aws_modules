@@ -14,7 +14,7 @@ resource "aws_iam_role" "storage_credential" {
   name               = each.value.role_name
   assume_role_policy = data.databricks_aws_unity_catalog_assume_role_policy.this[each.key].json
   description        = lookup(each.value, "description", "IAM role for Databricks external location")
-  
+
   tags = lookup(each.value, "tags", {})
 }
 

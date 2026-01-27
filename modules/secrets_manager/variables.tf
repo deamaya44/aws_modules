@@ -113,7 +113,7 @@ variable "replica_regions" {
     region     = string
     kms_key_id = optional(string)
   }))
-  default     = []
+  default = []
 }
 
 # Common Tags

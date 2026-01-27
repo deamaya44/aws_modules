@@ -53,16 +53,16 @@ variable "role_arn" {
 }
 variable "bucket_id" {
   description = "The ID of the source bucket for replication"
-  type        = string  
+  type        = string
   default     = null
 }
 variable "destination_bucket_arn" {
   description = "The ARN of the destination bucket for replication"
-  type        = string  
+  type        = string
   default     = null
 }
 variable "storage_class" {
   description = "The storage class for replicated objects"
-  type        = string  
+  type        = string
   default     = "STANDARD"
 }

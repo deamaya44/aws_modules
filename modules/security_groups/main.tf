@@ -18,10 +18,10 @@ resource "aws_security_group_rule" "ingress" {
   type              = "ingress"
   security_group_id = aws_security_group.this.id
 
-  from_port   = var.ingress_rules[count.index].from_port
-  to_port     = var.ingress_rules[count.index].to_port
-  protocol    = var.ingress_rules[count.index].protocol
-  cidr_blocks = lookup(var.ingress_rules[count.index], "cidr_blocks", null)
+  from_port       = var.ingress_rules[count.index].from_port
+  to_port         = var.ingress_rules[count.index].to_port
+  protocol        = var.ingress_rules[count.index].protocol
+  cidr_blocks     = lookup(var.ingress_rules[count.index], "cidr_blocks", null)
   prefix_list_ids = lookup(var.ingress_rules[count.index], "prefix_list_ids", null)
 
   source_security_group_id = lookup(var.ingress_rules[count.index], "source_security_group_id", null)
@@ -31,17 +31,17 @@ resource "aws_security_group_rule" "ingress" {
 
 # Egress Rules
 resource "aws_security_group_rule" "egress" {
-    count             = length(var.egress_rules)
-    type              = "egress"
-    security_group_id = aws_security_group.this.id
-    
-    from_port   = var.egress_rules[count.index].from_port
-    to_port     = var.egress_rules[count.index].to_port
-    protocol    = var.egress_rules[count.index].protocol
-    cidr_blocks = lookup(var.egress_rules[count.index], "cidr_blocks", null)
-    prefix_list_ids = lookup(var.egress_rules[count.index], "prefix_list_ids", null)
-      
-    source_security_group_id = lookup(var.egress_rules[count.index], "destination_security_group_id", null)
-    
-    description = lookup(var.egress_rules[count.index], "description", "")
+  count             = length(var.egress_rules)
+  type              = "egress"
+  security_group_id = aws_security_group.this.id
+
+  from_port       = var.egress_rules[count.index].from_port
+  to_port         = var.egress_rules[count.index].to_port
+  protocol        = var.egress_rules[count.index].protocol
+  cidr_blocks     = lookup(var.egress_rules[count.index], "cidr_blocks", null)
+  prefix_list_ids = lookup(var.egress_rules[count.index], "prefix_list_ids", null)
+
+  source_security_group_id = lookup(var.egress_rules[count.index], "destination_security_group_id", null)
+
+  description = lookup(var.egress_rules[count.index], "description", "")
 }

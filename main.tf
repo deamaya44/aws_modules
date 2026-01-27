@@ -228,3 +228,18 @@
 #     device_index = try(each.value.device_index, null)
 #     tags = each.value.tags
 # }
+
+## EC2 example
+# module "ec2" {
+#     source = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/ec2?ref=main"
+#     for_each = local.ec2
+#     ami = each.value.ami
+#     instance_type = each.value.instance_type
+#     subnet_id = try(each.value.subnet_id, null)
+#     nic = try(each.value.nic, false)
+#     primary_network_interface = try(each.value.primary_network_interface, null)
+#     cpu_options = try(each.value.cpu_options, false)
+#     core_count  = try(each.value.core_count, null)
+#     threads_per_core = try(each.value.threads_per_core, null)
+#     tags = each.value.tags
+# }
