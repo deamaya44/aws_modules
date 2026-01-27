@@ -215,3 +215,16 @@
 #   # Common Tags
 #   common_tags = each.value.tags
 # }
+## Nic example
+# module "nic" {
+#     source = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/nic?ref=main"
+#     for_each = local.nic
+#     description = each.value.description
+#     subnet_id = each.value.subnet_id
+#     private_ips = each.value.private_ips
+#     security_groups = each.value.security_groups
+#     attachment = each.value.attachment
+#     instance_id = try(each.value.instance_id, null)
+#     device_index = try(each.value.device_index, null)
+#     tags = each.value.tags
+# }
