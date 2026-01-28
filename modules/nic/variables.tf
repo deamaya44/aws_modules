@@ -21,14 +21,14 @@ variable "attachment" {
 variable "instance_id" {
   description = "The ID of the instance to attach to."
   type        = string
-  default     = null
+  # default     = null
   nullable    = false
 }
 
 variable "device_index" {
   description = "The device index of the network interface attachment on the instance."
   type        = number
-  default     = null
+  # default     = null
   nullable    = false
 }
 
