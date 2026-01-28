@@ -21,11 +21,13 @@ variable "attachment" {
 variable "instance_id" {
   description = "The ID of the instance to attach to."
   type        = string
+  default     = null
 }
 
 variable "device_index" {
   description = "The device index of the network interface attachment on the instance."
   type        = number
+  default     = null
 }
 variable "tags" {
   description = "Tags to apply to the network interface."
@@ -34,4 +36,4 @@ variable "tags" {
 variable "description" {
   description = "Description of the network interface."
   type        = string
-}
+  }
