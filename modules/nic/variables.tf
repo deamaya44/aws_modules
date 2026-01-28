@@ -22,17 +22,21 @@ variable "instance_id" {
   description = "The ID of the instance to attach to."
   type        = string
   default     = null
+  nullable    = false
 }
 
 variable "device_index" {
   description = "The device index of the network interface attachment on the instance."
   type        = number
   default     = null
+  nullable    = false
 }
+
 variable "tags" {
   description = "Tags to apply to the network interface."
   type        = map(string)
 }
+
 variable "description" {
   description = "Description of the network interface."
   type        = string
