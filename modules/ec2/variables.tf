@@ -53,3 +53,9 @@ variable "iam_instance_profile" {
   type        = string
   default     = null
 }
+
+variable "user_data" {
+  description = "The user data to provide when launching the instance."
+  type        = string
+  default     = null
+}
