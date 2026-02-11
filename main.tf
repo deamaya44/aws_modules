@@ -98,6 +98,98 @@
 # module "rds" {
 #   source = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/rds?ref=main"
 ##  for_each = local.rds_instances --- Uncomment this, when you set the locals ---
+
+# CodeCommit Module Example
+# module "codecommit" {
+#   source   = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/codecommit?ref=main"
+##  for_each = local.codecommit_repos --- Uncomment this, when you set the locals ---
+#   
+#   # Repository Configuration
+#   repository_name = each.value.repository_name
+#   description     = each.value.description
+#   default_branch  = lookup(each.value, "default_branch", "main")
+#   
+#   # Triggers (optional)
+#   create_trigger = lookup(each.value, "create_trigger", false)
+#   triggers       = lookup(each.value, "triggers", [])
+#   
+#   # Approval Rules (optional)
+#   create_approval_rule           = lookup(each.value, "create_approval_rule", false)
+#   approval_rule_description      = lookup(each.value, "approval_rule_description", "")
+#   approval_rule_branches         = lookup(each.value, "approval_rule_branches", ["refs/heads/main"])
+#   approval_rule_approvals_needed = lookup(each.value, "approval_rule_approvals_needed", 1)
+#   approval_rule_members          = lookup(each.value, "approval_rule_members", [])
+#   
+#   # Common Tags
+#   common_tags = each.value.tags
+# }
+
+# CodeBuild Module Example
+# module "codebuild" {
+#   source   = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/codebuild?ref=main"
+##  for_each = local.codebuild_projects --- Uncomment this, when you set the locals ---
+#   
+#   # Project Configuration
+#   project_name     = each.value.project_name
+#   description      = each.value.description
+#   service_role_arn = each.value.service_role_arn
+#   build_timeout    = lookup(each.value, "build_timeout", 60)
+#   
+#   # Environment
+#   compute_type              = lookup(each.value, "compute_type", "BUILD_GENERAL1_SMALL")
+#   image                     = lookup(each.value, "image", "aws/codebuild/standard:7.0")
+#   environment_type          = lookup(each.value, "environment_type", "LINUX_CONTAINER")
+#   privileged_mode           = lookup(each.value, "privileged_mode", false)
+#   environment_variables     = lookup(each.value, "environment_variables", [])
+#   
+#   # Source
+#   source_type     = lookup(each.value, "source_type", "CODEPIPELINE")
+#   source_location = lookup(each.value, "source_location", null)
+#   buildspec       = lookup(each.value, "buildspec", "buildspec.yml")
+#   
+#   # Artifacts
+#   artifacts_type     = lookup(each.value, "artifacts_type", "CODEPIPELINE")
+#   artifacts_location = lookup(each.value, "artifacts_location", null)
+#   
+#   # Cache (optional)
+#   cache_type  = lookup(each.value, "cache_type", null)
+#   cache_modes = lookup(each.value, "cache_modes", [])
+#   
+#   # VPC (optional)
+#   vpc_id             = lookup(each.value, "vpc_id", null)
+#   subnets            = lookup(each.value, "subnets", [])
+#   security_group_ids = lookup(each.value, "security_group_ids", [])
+#   
+#   # Common Tags
+#   common_tags = each.value.tags
+# }
+
+# CodePipeline Module Example
+# module "codepipeline" {
+#   source   = "git::ssh://git@github.com/deamaya44/aws_modules.git//modules/codepipeline?ref=main"
+##  for_each = local.codepipelines --- Uncomment this, when you set the locals ---
+#   
+#   # Pipeline Configuration
+#   pipeline_name           = each.value.pipeline_name
+#   role_arn                = each.value.role_arn
+#   artifact_store_location = each.value.artifact_store_location
+#   
+#   # Stages
+#   source_actions   = each.value.source_actions
+#   build_actions    = lookup(each.value, "build_actions", [])
+#   deploy_actions   = lookup(each.value, "deploy_actions", [])
+#   approval_actions = lookup(each.value, "approval_actions", [])
+#   custom_stages    = lookup(each.value, "custom_stages", [])
+#   
+#   # EventBridge Trigger (optional)
+#   create_eventbridge_rule     = lookup(each.value, "create_eventbridge_rule", false)
+#   eventbridge_branch_names    = lookup(each.value, "eventbridge_branch_names", ["main"])
+#   eventbridge_repository_arns = lookup(each.value, "eventbridge_repository_arns", [])
+#   eventbridge_role_arn        = lookup(each.value, "eventbridge_role_arn", null)
+#   
+#   # Common Tags
+#   common_tags = each.value.tags
+# }
 #   
 #   # Basic Configuration
 #   identifier     = each.value.identifier
