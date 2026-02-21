@@ -1,35 +1,39 @@
-# AWS Amplify Hosting Module
+# AWS Amplify Hosting Module (Manual Deployment)
 
-Módulo de Terraform para desplegar aplicaciones frontend con AWS Amplify Hosting.
+Módulo de Terraform para desplegar aplicaciones frontend con AWS Amplify Hosting usando **manual deployment** desde CodePipeline.
 
 ## Características
 
-- ✅ Integración directa con GitHub
-- ✅ Auto-deploy en cada push
-- ✅ Build automático (React, Vue, Angular, etc.)
+- ✅ Manual deployment desde CodePipeline/CodeBuild
+- ✅ Integración con CodeCommit
 - ✅ Dominio personalizado con SSL
 - ✅ SPA routing (Single Page Application)
-- ✅ Variables de entorno en build time
-- ✅ Free Tier: 1000 build minutes/mes, 15 GB hosting
+- ✅ CDN global incluido
+- ✅ Free Tier: 15 GB hosting + 15 GB transferencia/mes
+
+## Arquitectura
+
+```
+CodeCommit → CodePipeline → CodeBuild (npm run build) → Amplify CLI deploy → Amplify Hosting
+```
 
 ## Uso
+
+### 1. Crear la app Amplify
 
 ```hcl
 module "amplify_frontend" {
   source = "git::https://github.com/deamaya44/aws_modules.git//modules/amplify?ref=main"
 
-  app_name       = "my-app"
-  repository_url = "https://github.com/user/repo"
-  github_token   = var.github_token
-  branch_name    = "main"
+  app_name     = "my-app-prod"
+  branch_name  = "main"
 
   environment_variables = {
     VITE_API_URL = "https://api.example.com"
-    NODE_ENV     = "production"
   }
 
-  custom_domain     = "example.com"
-  subdomain_prefix  = "app"
+  custom_domain    = "example.com"
+  subdomain_prefix = "app"
 
   common_tags = {
     Environment = "prod"
@@ -38,25 +42,52 @@ module "amplify_frontend" {
 }
 ```
 
-## Requisitos
+### 2. Buildspec para CodeBuild
 
-1. **GitHub Personal Access Token** con permisos:
-   - `repo` (acceso completo al repositorio)
-   - Guardar en SSM Parameter Store o Secrets Manager
+```yaml
+version: 0.2
 
-2. **Repositorio GitHub** con:
-   - `package.json` con script `build`
-   - Framework soportado (React, Vue, Angular, etc.)
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - npm install -g @aws-amplify/cli
+      
+  pre_build:
+    commands:
+      - npm ci
+      
+  build:
+    commands:
+      - npm run build
+      
+  post_build:
+    commands:
+      - amplify deploy --appId $AMPLIFY_APP_ID --branchName $BRANCH_NAME --yes
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist
+```
+
+### 3. Variables de entorno en CodeBuild
+
+```hcl
+environment_variables = {
+  AMPLIFY_APP_ID = module.amplify_frontend.app_id
+  BRANCH_NAME    = "main"
+  VITE_API_URL   = "https://api.example.com"
+}
+```
 
 ## Variables
 
 | Variable | Descripción | Tipo | Default | Requerido |
 |----------|-------------|------|---------|-----------|
 | `app_name` | Nombre de la app | string | - | Sí |
-| `repository_url` | URL del repo GitHub | string | - | Sí |
-| `github_token` | Token de acceso GitHub | string | - | Sí |
-| `branch_name` | Rama a desplegar | string | `main` | No |
-| `enable_auto_build` | Auto-build en push | bool | `true` | No |
+| `branch_name` | Nombre de la rama | string | `main` | No |
 | `build_spec` | Build spec personalizado | string | `""` | No |
 | `environment_variables` | Variables de entorno | map(string) | `{}` | No |
 | `custom_domain` | Dominio personalizado | string | `""` | No |
@@ -67,55 +98,45 @@ module "amplify_frontend" {
 
 | Output | Descripción |
 |--------|-------------|
-| `app_id` | ID de la app Amplify |
+| `app_id` | ID de la app Amplify (usar en CodeBuild) |
 | `app_arn` | ARN de la app |
 | `default_domain` | Dominio por defecto (.amplifyapp.com) |
 | `branch_url` | URL de la rama desplegada |
 | `custom_domain` | URL del dominio personalizado |
 
-## Build Spec por Defecto
+## Permisos IAM para CodeBuild
 
-Si no se especifica `build_spec`, usa:
+El rol de CodeBuild necesita:
 
-```yaml
-version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - npm ci
-    build:
-      commands:
-        - npm run build
-  artifacts:
-    baseDirectory: dist
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - node_modules/**/*
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "amplify:CreateDeployment",
+        "amplify:StartDeployment",
+        "amplify:GetJob"
+      ],
+      "Resource": "arn:aws:amplify:*:*:apps/*/branches/*/deployments/*"
+    }
+  ]
+}
 ```
 
 ## Ejemplo Completo
 
 ```hcl
-# Obtener token de SSM
-data "aws_ssm_parameter" "github_token" {
-  name = "/github/token"
-}
-
+# 1. Crear Amplify App
 module "amplify_app" {
   source = "git::https://github.com/deamaya44/aws_modules.git//modules/amplify?ref=main"
 
-  app_name       = "tasks-3d-prod"
-  repository_url = "https://github.com/deamaya44/canicas-todo"
-  github_token   = data.aws_ssm_parameter.github_token.value
-  branch_name    = "main"
+  app_name    = "tasks-3d-prod"
+  branch_name = "main"
 
   environment_variables = {
-    VITE_API_URL              = "https://api.example.com"
-    VITE_FIREBASE_API_KEY     = var.firebase_api_key
-    VITE_FIREBASE_PROJECT_ID  = var.firebase_project_id
+    VITE_API_URL = "https://api.amxops.com"
   }
 
   custom_domain    = "amxops.com"
@@ -124,8 +145,33 @@ module "amplify_app" {
   common_tags = {
     Environment = "prod"
     Project     = "tasks-3d"
-    Terraform   = "true"
   }
+}
+
+# 2. CodeBuild con deploy a Amplify
+module "codebuild_frontend" {
+  source = "git::https://github.com/deamaya44/aws_modules.git//modules/codebuild?ref=main"
+
+  project_name = "frontend-build"
+  buildspec    = "frontend/buildspec.yml"
+
+  environment_variables = {
+    AMPLIFY_APP_ID = module.amplify_app.app_id
+    BRANCH_NAME    = "main"
+    VITE_API_URL   = "https://api.amxops.com"
+  }
+
+  # Permisos adicionales para Amplify
+  additional_policies = [
+    {
+      actions = [
+        "amplify:CreateDeployment",
+        "amplify:StartDeployment",
+        "amplify:GetJob"
+      ]
+      resources = ["${module.amplify_app.app_arn}/*"]
+    }
+  ]
 }
 
 output "app_url" {
@@ -136,19 +182,24 @@ output "app_url" {
 ## Costos
 
 **Free Tier (siempre):**
-- 1000 build minutes/mes
 - 15 GB almacenamiento
 - 15 GB transferencia/mes
 - Requests ilimitadas
 
 **Después del Free Tier:**
-- Build: $0.01/minuto
 - Hosting: $0.15/GB transferencia
 - Almacenamiento: $0.023/GB/mes
 
-## Notas
+**Nota**: No se cobra por build minutes en manual deployment.
 
-- Amplify detecta automáticamente el framework (React, Vue, etc.)
-- SSL/TLS incluido automáticamente
-- CDN global incluido
-- No requiere CloudFront ni S3 separados
+## Flujo de Deployment
+
+1. Push a CodeCommit
+2. CodePipeline detecta cambio
+3. CodeBuild ejecuta:
+   - `npm ci`
+   - `npm run build`
+   - `amplify deploy --appId xxx --branchName main`
+4. Amplify publica el contenido
+5. Disponible en `https://main.xxxxx.amplifyapp.com`
+

@@ -1,26 +1,20 @@
 resource "aws_amplify_app" "this" {
-  name       = var.app_name
-  repository = var.repository_url
+  name = var.app_name
 
-  access_token = var.github_token
+  # Manual deployment - no repository connection
+  platform = "WEB"
 
   build_spec = var.build_spec != "" ? var.build_spec : <<-EOT
     version: 1
     frontend:
       phases:
-        preBuild:
-          commands:
-            - npm ci
         build:
           commands:
-            - npm run build
+            - echo "Build handled by CodeBuild"
       artifacts:
-        baseDirectory: dist
+        baseDirectory: /
         files:
           - '**/*'
-      cache:
-        paths:
-          - node_modules/**/*
   EOT
 
   dynamic "environment_variables" {
@@ -50,7 +44,7 @@ resource "aws_amplify_branch" "main" {
   app_id      = aws_amplify_app.this.id
   branch_name = var.branch_name
 
-  enable_auto_build = var.enable_auto_build
+  enable_auto_build = false  # Manual deployment
 
   dynamic "environment_variables" {
     for_each = var.environment_variables
