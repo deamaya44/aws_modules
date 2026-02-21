@@ -2,14 +2,28 @@ resource "aws_dynamodb_table" "this" {
   name                        = var.table_name
   billing_mode                = var.billing_mode
   deletion_protection_enabled = var.deletion_protection_enabled
-  hash_key                    = var.hash_key
-  range_key                   = var.range_key
 
   dynamic "attribute" {
     for_each = var.attributes
     content {
       name = attribute.value.name
       type = attribute.value.type
+    }
+  }
+
+  dynamic "key_schema" {
+    for_each = var.hash_key != null ? [1] : []
+    content {
+      attribute_name = var.hash_key
+      key_type       = "HASH"
+    }
+  }
+
+  dynamic "key_schema" {
+    for_each = var.range_key != null ? [1] : []
+    content {
+      attribute_name = var.range_key
+      key_type       = "RANGE"
     }
   }
 
