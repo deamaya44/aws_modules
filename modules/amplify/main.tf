@@ -45,14 +45,15 @@ resource "aws_amplify_branch" "main" {
   tags = var.common_tags
 }
 
-resource "aws_amplify_domain_association" "this" {
-  count = var.custom_domain != "" ? 1 : 0
-
-  app_id      = aws_amplify_app.this.id
-  domain_name = var.custom_domain
-
-  sub_domain {
-    branch_name = aws_amplify_branch.main.branch_name
-    prefix      = var.subdomain_prefix
-  }
-}
+# COMENTADO TEMPORALMENTE - Aplicar de último
+# resource "aws_amplify_domain_association" "this" {
+#   count = var.custom_domain != "" ? 1 : 0
+# 
+#   app_id      = aws_amplify_app.this.id
+#   domain_name = var.custom_domain
+# 
+#   sub_domain {
+#     branch_name = aws_amplify_branch.main.branch_name
+#     prefix      = var.subdomain_prefix
+#   }
+# }
