@@ -1,108 +1,137 @@
-# CodeBuild Project
+data "aws_iam_policy_document" "codebuild_assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["codebuild.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "this" {
+  name               = "${var.project_name}-codebuild-role"
+  assume_role_policy = data.aws_iam_policy_document.codebuild_assume_role.json
+
+  tags = var.common_tags
+}
+
+data "aws_iam_policy_document" "codebuild_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject"
+    ]
+    resources = ["${var.artifacts_bucket_arn}/*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "codecommit:GitPull"
+    ]
+    resources = ["*"]
+  }
+
+  # Permisos para frontend: subir archivos a S3 bucket de hosting
+  # Permisos para frontend: deploy a Amplify
+  dynamic "statement" {
+    for_each = var.amplify_app_arn != "" ? [1] : []
+    content {
+      effect = "Allow"
+      actions = [
+        "amplify:CreateDeployment",
+        "amplify:StartDeployment",
+        "amplify:GetJob"
+      ]
+      resources = [
+        var.amplify_app_arn,
+        "${var.amplify_app_arn}/*"
+      ]
+    }
+  }
+
+  # Permisos para backend: actualizar código Lambda
+  dynamic "statement" {
+    for_each = var.lambda_function_arn != "" ? [1] : []
+    content {
+      effect = "Allow"
+      actions = [
+        "lambda:UpdateFunctionCode"
+      ]
+      resources = [var.lambda_function_arn]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.privileged_mode ? [1] : []
+    content {
+      effect = "Allow"
+      actions = [
+        "ecr:GetAuthorizationToken",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+      ]
+      resources = ["*"]
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "this" {
+  role   = aws_iam_role.this.name
+  policy = data.aws_iam_policy_document.codebuild_policy.json
+}
+
 resource "aws_codebuild_project" "this" {
   name          = var.project_name
   description   = var.description
-  service_role  = var.service_role_arn
-  build_timeout = var.build_timeout
+  service_role  = aws_iam_role.this.arn
+  build_timeout = 60
 
   artifacts {
-    type                   = var.artifacts_type
-    location               = var.artifacts_location
-    name                   = var.artifacts_name
-    namespace_type         = var.artifacts_namespace_type
-    packaging              = var.artifacts_packaging
-    encryption_disabled    = var.artifacts_encryption_disabled
-    override_artifact_name = var.artifacts_override_name
+    type = "CODEPIPELINE"
   }
 
   environment {
     compute_type                = var.compute_type
     image                       = var.image
-    type                        = var.environment_type
-    image_pull_credentials_type = var.image_pull_credentials_type
+    type                        = var.type
+    image_pull_credentials_type = "CODEBUILD"
     privileged_mode             = var.privileged_mode
 
     dynamic "environment_variable" {
       for_each = var.environment_variables
       content {
-        name  = environment_variable.value.name
-        value = environment_variable.value.value
-        type  = lookup(environment_variable.value, "type", "PLAINTEXT")
+        name  = environment_variable.key
+        value = environment_variable.value
       }
     }
   }
 
   source {
-    type            = var.source_type
-    location        = var.source_location
-    buildspec       = var.buildspec
-    git_clone_depth = var.git_clone_depth
-
-    dynamic "git_submodules_config" {
-      for_each = var.fetch_git_submodules ? [1] : []
-      content {
-        fetch_submodules = true
-      }
-    }
+    type      = "CODEPIPELINE"
+    buildspec = var.buildspec
   }
 
-  # VPC Configuration (optional)
-  dynamic "vpc_config" {
-    for_each = var.vpc_id != null ? [1] : []
-    content {
-      vpc_id             = var.vpc_id
-      subnets            = var.subnets
-      security_group_ids = var.security_group_ids
-    }
-  }
-
-  # Cache Configuration (optional)
-  dynamic "cache" {
-    for_each = var.cache_type != null ? [1] : []
-    content {
-      type     = var.cache_type
-      location = var.cache_location
-      modes    = var.cache_modes
-    }
-  }
-
-  # Logs Configuration
   logs_config {
     cloudwatch_logs {
-      status      = var.cloudwatch_logs_status
-      group_name  = var.cloudwatch_logs_group_name
-      stream_name = var.cloudwatch_logs_stream_name
-    }
-
-    dynamic "s3_logs" {
-      for_each = var.s3_logs_status != null ? [1] : []
-      content {
-        status              = var.s3_logs_status
-        location            = var.s3_logs_location
-        encryption_disabled = var.s3_logs_encryption_disabled
-      }
+      status = "ENABLED"
     }
   }
 
-  tags = merge(
-    var.common_tags,
-    {
-      Name = var.project_name
-    }
-  )
-}
-
-# CloudWatch Log Group
-resource "aws_cloudwatch_log_group" "this" {
-  count = var.create_log_group ? 1 : 0
-
-  name              = "/aws/codebuild/${var.project_name}"
-  retention_in_days = var.log_retention_days
-
-  tags = merge(
-    var.common_tags,
-    {
-      Name = "/aws/codebuild/${var.project_name}"
-    }
-  )
+  tags = var.common_tags
 }
