@@ -17,13 +17,7 @@ resource "aws_amplify_app" "this" {
           - '**/*'
   EOT
 
-  dynamic "environment_variables" {
-    for_each = var.environment_variables
-    content {
-      name  = environment_variables.key
-      value = environment_variables.value
-    }
-  }
+  environment_variables = var.environment_variables
 
   custom_rule {
     source = "/<*>"
@@ -46,13 +40,7 @@ resource "aws_amplify_branch" "main" {
 
   enable_auto_build = false  # Manual deployment
 
-  dynamic "environment_variables" {
-    for_each = var.environment_variables
-    content {
-      name  = environment_variables.key
-      value = environment_variables.value
-    }
-  }
+  environment_variables = var.environment_variables
 
   tags = var.common_tags
 }
