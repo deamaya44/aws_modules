@@ -2,6 +2,8 @@ resource "aws_dynamodb_table" "this" {
   name                        = var.table_name
   billing_mode                = var.billing_mode
   deletion_protection_enabled = var.deletion_protection_enabled
+  hash_key                    = var.hash_key
+  range_key                   = var.range_key
 
   dynamic "attribute" {
     for_each = var.attributes
@@ -9,11 +11,6 @@ resource "aws_dynamodb_table" "this" {
       name = attribute.value.name
       type = attribute.value.type
     }
-  }
-
-  key_schema {
-    attribute_name = var.hash_key
-    key_type       = "HASH"
   }
 
   dynamic "global_secondary_index" {
@@ -41,4 +38,8 @@ resource "aws_dynamodb_table" "this" {
   write_capacity = var.billing_mode == "PROVISIONED" ? var.write_capacity : null
 
   tags = var.common_tags
+
+  lifecycle {
+    ignore_changes = [read_capacity, write_capacity]
+  }
 }
