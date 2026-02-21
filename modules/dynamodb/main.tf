@@ -16,14 +16,6 @@ resource "aws_dynamodb_table" "this" {
     key_type       = "HASH"
   }
 
-  dynamic "key_schema" {
-    for_each = var.range_key != null ? [var.range_key] : []
-    content {
-      attribute_name = key_schema.value
-      key_type       = "RANGE"
-    }
-  }
-
   dynamic "global_secondary_index" {
     for_each = var.global_secondary_indexes
     content {
