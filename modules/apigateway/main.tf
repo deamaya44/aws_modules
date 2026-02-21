@@ -50,7 +50,7 @@ resource "aws_apigatewayv2_route" "this" {
   route_key          = each.value.route_key
   target             = "integrations/${aws_apigatewayv2_integration.this[each.value.integration_key].id}"
   authorization_type = try(each.value.authorization_type, "NONE")
-  authorizer_id      = try(each.value.authorizer_id, null)
+  authorizer_id      = try(aws_apigatewayv2_authorizer.this[each.value.authorizer_id].id, null)
 }
 
 resource "aws_apigatewayv2_authorizer" "this" {
