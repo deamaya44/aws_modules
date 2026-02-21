@@ -10,7 +10,7 @@ variable "command" {
 }
 
 variable "working_dir" {
-  description = "Working directory for command execution"
+  description = "Working directory"
   type        = string
   default     = null
 }
