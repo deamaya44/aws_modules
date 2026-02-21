@@ -4,45 +4,25 @@ variable "triggers" {
   default     = {}
 }
 
-variable "local_exec" {
-  description = "List of local-exec provisioners"
-  type = list(object({
-    command     = string
-    working_dir = optional(string)
-    environment = optional(map(string))
-    interpreter = optional(list(string))
-  }))
-  default = []
+variable "command" {
+  description = "Command to execute"
+  type        = string
 }
 
-variable "remote_exec" {
-  description = "List of remote-exec provisioners"
-  type = list(object({
-    inline = optional(list(string))
-    script = optional(string)
-  }))
-  default = []
+variable "working_dir" {
+  description = "Working directory for command execution"
+  type        = string
+  default     = null
 }
 
-variable "file" {
-  description = "List of file provisioners"
-  type = list(object({
-    source      = optional(string)
-    destination = string
-    content     = optional(string)
-  }))
-  default = []
+variable "environment" {
+  description = "Environment variables"
+  type        = map(string)
+  default     = null
 }
 
-variable "connection" {
-  description = "Connection settings for remote provisioners"
-  type = object({
-    type        = optional(string)
-    host        = optional(string)
-    user        = optional(string)
-    password    = optional(string)
-    private_key = optional(string)
-    port        = optional(number)
-  })
-  default = {}
+variable "interpreter" {
+  description = "Command interpreter"
+  type        = list(string)
+  default     = null
 }
