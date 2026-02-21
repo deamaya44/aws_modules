@@ -11,18 +11,15 @@ resource "aws_dynamodb_table" "this" {
     }
   }
 
-  dynamic "key_schema" {
-    for_each = var.hash_key != null ? [1] : []
-    content {
-      attribute_name = var.hash_key
-      key_type       = "HASH"
-    }
+  key_schema {
+    attribute_name = var.hash_key
+    key_type       = "HASH"
   }
 
   dynamic "key_schema" {
-    for_each = var.range_key != null ? [1] : []
+    for_each = var.range_key != null ? [var.range_key] : []
     content {
-      attribute_name = var.range_key
+      attribute_name = key_schema.value
       key_type       = "RANGE"
     }
   }
