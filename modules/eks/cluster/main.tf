@@ -14,5 +14,9 @@ resource "aws_eks_cluster" "this" {
     authentication_mode = var.authentication_mode
   }
 
+  lifecycle {
+    ignore_changes = [access_config[0].bootstrap_cluster_creator_admin_permissions]
+  }
+
   tags = var.common_tags
 }
