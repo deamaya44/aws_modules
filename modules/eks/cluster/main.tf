@@ -10,5 +10,9 @@ resource "aws_eks_cluster" "this" {
     public_access_cidrs     = var.public_access_cidrs
   }
 
+  access_config {
+    authentication_mode = var.authentication_mode
+  }
+
   tags = var.common_tags
 }

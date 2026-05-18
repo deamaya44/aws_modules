@@ -41,3 +41,9 @@ variable "public_access_cidrs" {
   type        = list(string)
   default     = []
 }
+
+variable "authentication_mode" {
+  description = "Authentication mode for the cluster (API, CONFIG_MAP, API_AND_CONFIG_MAP)"
+  type        = string
+  default     = "API_AND_CONFIG_MAP"
+}
