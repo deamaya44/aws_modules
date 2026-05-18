@@ -26,7 +26,6 @@ variable "instance_types" {
 variable "disk_size" {
   description = "Disk size in GB"
   type        = number
-  default     = 50
 }
 
 variable "desired_size" {
@@ -47,5 +46,4 @@ variable "max_size" {
 variable "common_tags" {
   description = "Common tags"
   type        = map(string)
-  default     = {}
 }
