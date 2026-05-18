@@ -6,6 +6,7 @@ variable "cluster_name" {
 variable "addons" {
   description = "Map of EKS addons to install"
   type = map(object({
-    version = optional(string)
+    version                  = optional(string)
+    service_account_role_arn = optional(string)
   }))
 }
