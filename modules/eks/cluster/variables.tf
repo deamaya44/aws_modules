@@ -35,3 +35,9 @@ variable "common_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "public_access_cidrs" {
+  description = "CIDRs allowed to access public endpoint"
+  type        = list(string)
+  default     = []
+}
